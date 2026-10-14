@@ -1,0 +1,100 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Groww Review Intelligence - n8n Pipeline",
+    "quality_profile": "showcase",
+    "output": ".archify/workflow-groww-pipeline-20261014-160901/groww-pipeline.html"
+  },
+  "lanes": [
+    { "id": "trigger", "label": "Trigger & Config" },
+    { "id": "data", "label": "Data Preparation" },
+    { "id": "analysis", "label": "AI Analysis" },
+    { "id": "writing", "label": "Write & Assemble" },
+    { "id": "gate", "label": "Approval Gate", "variant": "exception" },
+    { "id": "actions", "label": "Post-Approval Actions" },
+    { "id": "outcomes", "label": "Outcomes" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "Intake", "fromCol": 0, "toCol": 1 },
+    { "id": "prepare", "label": "Prepare", "fromCol": 2, "toCol": 2 },
+    { "id": "analyse", "label": "Analyse", "fromCol": 3, "toCol": 4, "variant": "emphasis" },
+    { "id": "deliver", "label": "Deliver", "fromCol": 5, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": ["start", "config", "get_reviews", "prep", "sample", "themes", "parse_themes", "fee", "parse_fee", "pulse", "explainer", "assemble", "review", "approved", "doc", "done"],
+  "nodes": [
+    { "id": "start", "lane": "trigger", "col": 0, "type": "external", "label": "Start", "sublabel": "form trigger", "tag": "window choice", "width": 150 },
+    { "id": "config", "lane": "trigger", "col": 1, "type": "backend", "label": "Config", "sublabel": "email, Doc, links", "tag": "one place", "width": 150 },
+    { "id": "get_reviews", "lane": "data", "col": 1, "type": "database", "label": "Get reviews", "sublabel": "Google Sheets", "tag": "2,439 cleaned", "width": 150 },
+    { "id": "prep", "lane": "data", "col": 2, "type": "backend", "label": "Prep reviews", "sublabel": "window + IDs", "tag": "flag fee words", "width": 150 },
+    { "id": "sample", "lane": "data", "col": 3, "type": "backend", "label": "Sample", "sublabel": "random + fee-first", "tag": "400 + 150", "width": 150 },
+    { "id": "themes", "lane": "analysis", "col": 3, "type": "cloud", "label": "Themes LLM", "sublabel": "Gemini", "tag": "max 5 themes", "width": 150 },
+    { "id": "parse_themes", "lane": "analysis", "col": 4, "type": "backend", "label": "Parse themes", "sublabel": "verify + count", "tag": "top 3", "width": 150, "yOffset": -110 },
+    { "id": "fee", "lane": "analysis", "col": 4, "type": "cloud", "label": "Fee LLM", "sublabel": "Gemini", "tag": "categories A-X", "width": 150, "yOffset": 0 },
+    { "id": "parse_fee", "lane": "analysis", "col": 4, "type": "backend", "label": "Parse fee issue", "sublabel": "count categories", "tag": "catch-all blocked", "width": 150, "yOffset": 110 },
+    { "id": "pulse", "lane": "writing", "col": 4, "type": "cloud", "label": "Pulse LLM", "sublabel": "weekly pulse", "tag": "facts only", "width": 150 },
+    { "id": "explainer", "lane": "writing", "col": 5, "type": "cloud", "label": "Explainer LLM", "sublabel": "neutral bullets", "tag": "no rates", "width": 150, "yOffset": -60 },
+    { "id": "assemble", "lane": "writing", "col": 5, "type": "backend", "label": "Assemble and check", "sublabel": "links + date + checks", "tag": "builds form", "width": 150, "yOffset": 60 },
+    { "id": "review", "lane": "gate", "col": 5, "type": "frontend", "label": "Review page", "sublabel": "Approve / Reject", "tag": "hard gate", "width": 150, "yOffset": -60 },
+    { "id": "approved", "lane": "gate", "col": 5, "type": "security", "label": "Approved?", "sublabel": "IF Decision", "tag": "no = stop", "width": 150, "yOffset": 60 },
+    { "id": "doc", "lane": "actions", "col": 5, "type": "cloud", "label": "Doc append", "sublabel": "Google Docs", "tag": "structured entry", "width": 150, "yOffset": -60 },
+    { "id": "gmail", "lane": "actions", "col": 5, "type": "cloud", "label": "Gmail draft", "sublabel": "no recipient", "tag": "never sent", "width": 150, "yOffset": 60 },
+    { "id": "done", "lane": "outcomes", "col": 5, "type": "external", "label": "Done", "sublabel": "logged + drafted", "width": 150 },
+    { "id": "rejected", "lane": "outcomes", "col": 4, "type": "external", "label": "Rejected", "sublabel": "nothing saved", "width": 150 }
+  ],
+  "edges": [
+    { "id": "e-start-config", "from": "start", "to": "config" },
+    { "id": "e-config-reviews", "from": "config", "to": "get_reviews", "label": "load" },
+    { "id": "e-reviews-prep", "from": "get_reviews", "to": "prep" },
+    { "id": "e-prep-sample", "from": "prep", "to": "sample", "label": "window + IDs" },
+    { "id": "e-sample-themes", "from": "sample", "to": "themes", "label": "400 reviews" },
+    { "id": "e-themes-parse", "from": "themes", "to": "parse_themes" },
+    { "id": "e-parse-fee", "from": "parse_themes", "to": "fee" },
+    { "id": "e-fee-parsefee", "from": "fee", "to": "parse_fee" },
+    { "id": "e-parsefee-pulse", "from": "parse_fee", "to": "pulse", "label": "verified facts" },
+    { "id": "e-pulse-explainer", "from": "pulse", "to": "explainer" },
+    { "id": "e-explainer-assemble", "from": "explainer", "to": "assemble" },
+    { "id": "e-assemble-review", "from": "assemble", "to": "review", "label": "checks + entry", "variant": "emphasis" },
+    { "id": "e-review-approved", "from": "review", "to": "approved" },
+    { "id": "e-approved-doc", "from": "approved", "to": "doc", "label": "Approve", "variant": "emphasis", "role": "main" },
+    { "id": "e-approved-gmail", "from": "approved", "to": "gmail", "label": "Approve", "variant": "emphasis", "role": "main" },
+    { "id": "e-approved-rejected", "from": "approved", "to": "rejected", "label": "Reject", "variant": "security", "role": "error" },
+    { "id": "e-doc-done", "from": "doc", "to": "done", "role": "return" },
+    { "id": "e-gmail-done", "from": "gmail", "to": "done", "role": "return" }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Hard Approval Gate",
+      "items": [
+        "Nothing is written until the Review page returns Approve",
+        "Reject ends the run with nothing saved or drafted"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Two Samples, Two AI Lenses",
+      "items": [
+        "Themes run on 400 random reviews; the fee signal runs on 150 fee-related reviews",
+        "The fee sample favours low ratings so the signal cannot be sampled away"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Deterministic Checks",
+      "items": [
+        "Quotes are verified word for word in real reviews",
+        "Theme counts and pulse length are computed in code",
+        "Explainer needs exactly 2 https links and no rates"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Two Ways To Run The Actions",
+      "items": [
+        "Direct nodes: Google Docs + Gmail draft (M5-working-v2.json)",
+        "MCP: an agent calls append_to_doc and create_email_draft on the MCP server"
+      ]
+    }
+  ]
+}

@@ -18,6 +18,11 @@ and then, **only after a human approves**, logs both to a Google Doc and prepare
 | Working prototype (n8n form) | https://pranaybhatkar21.app.n8n.cloud/form/f242b6fa-bde5-4a22-a5aa-1006c0c455ba |
 | Demo video (3 min or less) | https://drive.google.com/file/d/1UdW6UcFcmRFNJF2ndyXFeWYePwn4OZ_Y/view?usp=sharing |
 | GitHub repository | https://github.com/pranaybhatkar/m5-groww-review-pulse-MCP-workflow.git |
+| Interactive diagrams (all 4) | https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/diagrams/ |
+| — n8n workflow diagram | https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/diagrams/groww-pipeline.html |
+| — MCP sequence diagram | https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/diagrams/mcp-approval.html |
+| — architecture diagram | https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/diagrams/groww-system.html |
+| — dataflow diagram | https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/diagrams/review-dataflow.html |
 
 The prototype runs on an n8n Cloud trial, which ends around 18 October 2026. After that the link stops working, so the demo video and the exported workflows in `workflows/` are the lasting proof.
 

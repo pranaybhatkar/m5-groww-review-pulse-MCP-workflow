@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "MCP Approval and Tool-Call Sequence",
+    "output": ".archify/sequence-mcp-approval-20261014-160901/mcp-approval.html",
+    "viewBox": [1040, 670],
+    "column_fit": "spread",
+    "quality_profile": "showcase"
+  },
+  "participants": [
+    { "id": "user", "type": "external", "label": "Reviewer", "sublabel": "human approver" },
+    { "id": "workflow", "type": "backend", "label": "n8n Workflow", "sublabel": "orchestration" },
+    { "id": "review", "type": "frontend", "label": "Review Page", "sublabel": "decision form" },
+    { "id": "approved", "type": "security", "label": "Approved? (IF)", "sublabel": "Decision gate" },
+    { "id": "agent", "type": "backend", "label": "MCP Agent", "sublabel": "one call each" },
+    { "id": "server", "type": "security", "label": "MCP Server", "sublabel": "Bearer auth" },
+    { "id": "docs", "type": "cloud", "label": "Google Docs", "sublabel": "fixed document" },
+    { "id": "gmail", "type": "cloud", "label": "Gmail", "sublabel": "create draft" }
+  ],
+  "segments": [
+    { "from": 158, "to": 345, "label": "Approval gate" },
+    { "from": 352, "to": 540, "label": "MCP tool calls (Bearer auth)" },
+    { "from": 548, "to": 562, "label": "Result" }
+  ],
+  "messages": [
+    { "id": "render", "from": "workflow", "to": "review", "y": 165, "label": "render pulse + checks", "variant": "emphasis" },
+    { "id": "show", "from": "review", "to": "user", "y": 193, "label": "show decision form", "variant": "default" },
+    { "id": "decide", "from": "user", "to": "review", "y": 221, "label": "Approve or Reject", "variant": "return" },
+    { "id": "collect", "from": "review", "to": "workflow", "y": 249, "label": "Decision value", "variant": "return" },
+    { "id": "gate", "from": "workflow", "to": "approved", "y": 277, "label": "evaluate Decision", "variant": "security" },
+    { "id": "true-branch", "from": "approved", "to": "workflow", "y": 305, "label": "Approve (true)", "variant": "emphasis" },
+    { "id": "false-branch", "from": "approved", "to": "workflow", "y": 333, "label": "Reject (false): stop", "variant": "dashed" },
+    { "id": "run", "from": "workflow", "to": "agent", "y": 361, "label": "run approved branch", "variant": "emphasis" },
+    { "id": "call-append", "from": "agent", "to": "server", "y": 389, "label": "append_to_doc(text)", "variant": "security" },
+    { "id": "insert", "from": "server", "to": "docs", "y": 417, "label": "insert at end of Doc", "variant": "default" },
+    { "id": "ok-append", "from": "server", "to": "agent", "y": 445, "label": "ok - called once", "variant": "return" },
+    { "id": "call-draft", "from": "agent", "to": "server", "y": 473, "label": "create_email_draft(subject, body)", "variant": "security" },
+    { "id": "draft", "from": "server", "to": "gmail", "y": 501, "label": "create draft, no recipient", "variant": "default" },
+    { "id": "ok-draft", "from": "server", "to": "agent", "y": 529, "label": "ok - called once", "variant": "return" },
+    { "id": "report", "from": "agent", "to": "workflow", "y": 557, "label": "both tools ok", "variant": "return" }
+  ],
+  "activations": [
+    { "participant": "workflow", "from": 160, "to": 560, "type": "backend" },
+    { "participant": "review", "from": 168, "to": 255, "type": "frontend" },
+    { "participant": "approved", "from": 272, "to": 338, "type": "security" },
+    { "participant": "agent", "from": 356, "to": 565, "type": "backend" },
+    { "participant": "server", "from": 384, "to": 535, "type": "security" },
+    { "participant": "docs", "from": 411, "to": 426, "type": "cloud" },
+    { "participant": "gmail", "from": 495, "to": 510, "type": "cloud" }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Gate Semantics",
+      "items": [
+        "Nothing on the true branch runs until the Review page returns Approve",
+        "Reject ends the run: nothing is written and no draft is created"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Idempotency And Safety",
+      "items": [
+        "The agent is told to call each tool exactly once and pass the text unchanged",
+        "It is told never to send an email; the draft has no recipient",
+        "The Google Doc is fixed inside the MCP server, so a caller cannot pick another"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Auth And Isolation",
+      "items": [
+        "The MCP server requires a Bearer token",
+        "In this variant the direct Docs and Gmail nodes are deactivated"
+      ]
+    }
+  ]
+}

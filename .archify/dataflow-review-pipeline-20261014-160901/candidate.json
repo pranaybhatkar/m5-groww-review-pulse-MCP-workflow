@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "Groww Review Pulse - Data Flow",
+    "output": ".archify/dataflow-review-pipeline-20261014-160901/review-dataflow.html",
+    "viewBox": [1078, 620],
+    "quality_profile": "showcase"
+  },
+  "stages": [
+    { "label": "Source" },
+    { "label": "Prepare" },
+    { "label": "Analyse" },
+    { "label": "Write" },
+    { "label": "Deliver" }
+  ],
+  "nodes": [
+    { "id": "gplay", "type": "external", "label": "Google Play", "sublabel": "Groww reviews", "stage": 0, "row": 0, "tag": "public" },
+    { "id": "raw", "type": "database", "label": "Raw scrape", "sublabel": "all fields", "stage": 0, "row": 1, "tag": "4,908 rows" },
+    { "id": "scrape", "type": "frontend", "label": "Chrome extension", "sublabel": "scrapes reviews", "stage": 0, "row": 2, "tag": "manual" },
+    { "id": "clean", "type": "backend", "label": "Clean + PII", "sublabel": "dedupe, dates, IDs", "stage": 1, "row": 0, "tag": "2,439 rows" },
+    { "id": "sample", "type": "backend", "label": "Sample", "sublabel": "random + fee-first", "stage": 1, "row": 1, "tag": "400 + 150" },
+    { "id": "themes", "type": "cloud", "label": "Theme clustering", "sublabel": "Gemini", "stage": 2, "row": 0, "tag": "max 5 themes" },
+    { "id": "fee", "type": "cloud", "label": "Fee detection", "sublabel": "Gemini", "stage": 2, "row": 2, "tag": "categories A-X" },
+    { "id": "pulse", "type": "backend", "label": "Weekly pulse", "sublabel": "facts only", "stage": 3, "row": 0, "tag": "<=240 words" },
+    { "id": "explainer", "type": "backend", "label": "Fee explainer", "sublabel": "neutral bullets", "stage": 3, "row": 2, "tag": "no rates" },
+    { "id": "gate", "type": "security", "label": "Checks + gate", "sublabel": "human Decision", "stage": 4, "row": 1, "tag": "quotes verified" },
+    { "id": "docs", "type": "cloud", "label": "Google Doc", "sublabel": "structured entry", "stage": 4, "row": 0, "tag": "append" },
+    { "id": "gmail", "type": "cloud", "label": "Gmail draft", "sublabel": "no recipient", "stage": 4, "row": 2, "tag": "never sent" }
+  ],
+  "flows": [
+    { "id": "reviews", "from": "gplay", "to": "raw", "label": "reviews", "classification": "public data", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelDy": 24 },
+    { "id": "scraped", "from": "scrape", "to": "raw", "label": "scraped rows", "classification": "manual pull", "variant": "default", "fromSide": "top", "toSide": "bottom", "labelDy": -24 },
+    { "id": "dedupe", "from": "raw", "to": "clean", "label": "dedupe + drop PII", "classification": "rows removed", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "id": "window", "from": "clean", "to": "sample", "label": "window + stable IDs", "classification": "2026-08-02 to 10-05", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelDy": 25 },
+    { "id": "theme-sample", "from": "sample", "to": "themes", "label": "400 random", "classification": "theme sample", "variant": "emphasis", "fromSide": "right", "toSide": "left", "labelDy": -16 },
+    { "id": "fee-sample", "from": "sample", "to": "fee", "label": "150 fee-first", "classification": "fee sample", "variant": "emphasis", "fromSide": "right", "toSide": "left", "labelDy": 26 },
+    { "id": "theme-facts", "from": "themes", "to": "pulse", "label": "top 3 themes", "classification": "verified", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "id": "fee-facts", "from": "fee", "to": "explainer", "label": "fee issue", "classification": "counted", "variant": "emphasis", "fromSide": "right", "toSide": "left" },
+    { "id": "pulse-page", "from": "pulse", "to": "gate", "label": "pulse text", "classification": "review page", "variant": "default", "fromSide": "right", "toSide": "left", "labelDy": -14 },
+    { "id": "explainer-page", "from": "explainer", "to": "gate", "label": "explainer text", "classification": "review page", "variant": "default", "fromSide": "right", "toSide": "left", "labelDy": 14 },
+    { "id": "gate-docs", "from": "gate", "to": "docs", "label": "Approve", "classification": "structured entry", "variant": "emphasis", "fromSide": "top", "toSide": "bottom", "labelAt": [968, 218] },
+    { "id": "gate-gmail", "from": "gate", "to": "gmail", "label": "Approve", "classification": "draft only", "variant": "emphasis", "fromSide": "bottom", "toSide": "top", "labelAt": [968, 320] }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Rows Shrink Deliberately",
+      "items": [
+        "The raw scrape holds 4,908 rows; cleaning leaves 2,439 usable reviews",
+        "Themes run on 400 random reviews; the fee signal runs on 150 fee-related reviews",
+        "Every count in the report is computed in code, not guessed by the model"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Nothing Leaves Before Approval",
+      "items": [
+        "Checks verify quotes word for word and cap the pulse length",
+        "The human approval gate is the last step before any write",
+        "Reject ends the run with nothing saved or drafted"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Outputs To Google",
+      "items": [
+        "Approved runs append a structured entry to a fixed Google Doc",
+        "A Gmail draft is prepared with no recipient, so it cannot be sent automatically",
+        "The same two writes can run through the MCP server tools instead"
+      ]
+    }
+  ]
+}

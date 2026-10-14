@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interactive Diagrams — Groww Review Pulse (Milestone 5)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.6; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #333; }
+    h1 { color: #2c3e50; }
+    h2 { color: #34495e; margin-top: 2rem; }
+    a { color: #3498db; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { padding-left: 1.5rem; }
+    .card { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; margin: 1rem 0; }
+    .card h3 { margin-top: 0; }
+    .note { color: #666; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <h1>Interactive Diagrams</h1>
+  <p>Four self-contained, explorable diagrams of the Groww Review Pulse workflow. Each opens as a standalone page with dark/light themes.</p>
+
+  <div class="card">
+    <h3><a href="groww-pipeline.html">1. n8n Workflow Diagram</a></h3>
+    <p class="note">The end-to-end pipeline: Trigger &rarr; Config &rarr; data prep &rarr; theme and fee analysis &rarr; writing &rarr; assembly &rarr; human approval gate &rarr; Doc + Gmail.</p>
+  </div>
+
+  <div class="card">
+    <h3><a href="mcp-approval.html">2. MCP Approval + Tool-Call Sequence</a></h3>
+    <p class="note">The review-page decision, the Approved? IF gate, and the MCP agent calling <code>append_to_doc</code> and <code>create_email_draft</code> exactly once.</p>
+  </div>
+
+  <div class="card">
+    <h3><a href="groww-system.html">3. System Architecture Diagram</a></h3>
+    <p class="note">The reviewer, the n8n Cloud workflow, Google Sheets and Gemini, the approval gate, and the two ways the post-approval writes run (direct nodes or MCP server).</p>
+  </div>
+
+  <div class="card">
+    <h3><a href="review-dataflow.html">4. Data Flow Diagram</a></h3>
+    <p class="note">How review data moves: raw scrape (4,908) &rarr; cleaned (2,439) &rarr; samples (400 + 150) &rarr; themes and fee signal &rarr; pulse + explainer &rarr; checks &rarr; approval &rarr; outputs.</p>
+  </div>
+
+  <p class="note">Source specifications (editable archify JSON) live under <code>.archify/</code> in the repository.</p>
+  <p><a href="../">&larr; Back to project overview</a></p>
+</body>
+</html>

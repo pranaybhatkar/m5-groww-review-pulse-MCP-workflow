@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Groww Review Intelligence - System Architecture",
+    "quality_profile": "showcase",
+    "output": ".archify/architecture-groww-system-20261014-160901/groww-system.html"
+  },
+  "components": [
+    { "id": "reviewer", "type": "external", "label": "Reviewer", "sublabel": "human approver", "pos": [10, 340], "size": [140, 66] },
+    { "id": "n8n", "type": "cloud", "label": "n8n Cloud Workflow", "sublabel": "form trigger + 9 steps", "pos": [250, 340], "size": [150, 70], "tag": "trial ends ~18 Oct 2026" },
+    { "id": "approval", "type": "security", "label": "Approval Gate", "sublabel": "Decision = Approve", "pos": [250, 120], "size": [150, 68], "tag": "nothing runs before this" },
+    { "id": "gemini", "type": "cloud", "label": "Google Gemini", "sublabel": "themes + fee + pulse", "pos": [520, 120], "size": [150, 64], "tag": "free tier" },
+    { "id": "sheets", "type": "database", "label": "Google Sheets", "sublabel": "cleaned reviews", "pos": [520, 420], "size": [150, 64], "tag": "2,439 rows" },
+    { "id": "outputs", "type": "cloud", "label": "Docs + Gmail", "sublabel": "entry + draft", "pos": [800, 260], "size": [160, 70], "tag": "no recipient" },
+    { "id": "mcpclient", "type": "backend", "label": "MCP Client", "sublabel": "one call each", "pos": [520, 660], "size": [150, 66], "tag": "variant B" },
+    { "id": "mcpserver", "type": "security", "label": "MCP Server", "sublabel": "append_to_doc + create_email_draft", "pos": [900, 660], "size": [170, 70], "tag": "Bearer auth" }
+  ],
+  "boundaries": [
+    { "kind": "region", "label": "n8n workflow", "wraps": ["n8n", "approval"], "pad": 24 },
+    { "kind": "security-group", "label": "MCP server (separate workflow)", "wraps": ["mcpserver"], "pad": 16 }
+  ],
+  "connections": [
+    { "id": "submit", "from": "reviewer", "to": "n8n", "label": "submits window", "variant": "emphasis" },
+    { "id": "gate", "from": "n8n", "to": "approval", "label": "builds review page" },
+    { "id": "decide", "from": "approval", "to": "reviewer", "label": "Approve / Reject", "variant": "dashed" },
+    { "id": "llm", "from": "n8n", "to": "gemini", "label": "classify + write", "variant": "emphasis" },
+    { "id": "read", "from": "n8n", "to": "sheets", "label": "read reviews", "variant": "emphasis" },
+    { "id": "write-direct", "from": "n8n", "to": "outputs", "label": "append + draft (if Approve)", "variant": "emphasis" },
+    { "id": "to-mcp", "from": "n8n", "to": "mcpclient", "label": "agent calls tools", "variant": "dashed" },
+    { "id": "mcp-call", "from": "mcpclient", "to": "mcpserver", "label": "append_to_doc + create_email_draft", "variant": "security" },
+    { "id": "mcp-write", "from": "mcpserver", "to": "outputs", "label": "insert + create draft", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Main Journey",
+      "items": [
+        "The reviewer submits the analysis window from an n8n form",
+        "The workflow reads cleaned reviews from Google Sheets and calls Gemini",
+        "It builds a review page, and only an Approve writes anything"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Two Ways To Run The Actions",
+      "items": [
+        "Direct variant: Google Docs and Gmail nodes write the entry and the draft",
+        "MCP variant: an MCP agent calls two tools on a separate MCP server workflow"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Safety And Isolation",
+      "items": [
+        "The MCP server requires a Bearer token and fixes the target Google Doc",
+        "The Gmail draft has no recipient, so it cannot be sent by accident",
+        "The n8n Cloud trial limits how long the live form link works"
+      ]
+    }
+  ]
+}
