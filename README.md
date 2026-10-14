@@ -231,4 +231,10 @@ screenshots/              approval page, Doc entry, Gmail draft, MCP tool calls
 
 **Note:** The two main workflows to run are `workflows/M5-working-v2.json` (direct nodes variant) and `workflows/M5-mcp-server.json` (MCP server variant). `workflows/M5-mcp-version.json` is the MCP client/agent variant that uses the MCP server.
 
+## GitHub Pages
+Core files hosted via GitHub Pages: [View on GitHub Pages](https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/)
+- [M5-working-v2.json](https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/M5-working-v2.json)
+- [M5-mcp-server.json](https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/M5-mcp-server.json)
+- [weekly_pulse.md](https://pranaybhatkar.github.io/m5-groww-review-pulse-MCP-workflow/weekly_pulse.md)
+
 The optional analysis scripts used to find the fee issue (`count_keywords.py`, `count_fee_topics.py`, `mf_issues.py`) and their outputs are under `analysis/`.
