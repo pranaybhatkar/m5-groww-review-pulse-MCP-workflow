@@ -1,0 +1,115 @@
+{
+  "name": "M5_MCP_SERVER",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "5e3be7e6-97c3-408f-a5fe-3d86c1958f9c"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2.1,
+      "position": [
+        -304,
+        -16
+      ],
+      "id": "27546459-1bb4-432b-80cc-979cbb4aaa63",
+      "name": "MCP Server Trigger",
+      "webhookId": "5e3be7e6-97c3-408f-a5fe-3d86c1958f9c",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "v8ceJOgrNZ71V7pi",
+          "name": "Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "https://docs.google.com/document/d/1zjLJX_iZWnsGrMkOLRtaJznlrnST6Go-wuCoeN0fKso/edit?usp=sharing",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('actionFields0_Old_Text', `Appends one entry to the M5 Weekly Pulse Log. Pass the entry text exactly as given, without changes.`, 'string') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -320,
+        176
+      ],
+      "id": "0df2ae60-966d-4296-a011-51a687c90016",
+      "name": "append_to_doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "jj5jj5l550dZPXxu",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `Pass the email body exactly as given, without changes.`, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        -16,
+        176
+      ],
+      "id": "f6f58c2c-6adb-4a9d-b099-1dfd501f96ae",
+      "name": "create_email_draft",
+      "webhookId": "b537d1a8-0c77-4af1-aaca-06e9bd9551f8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2k5vhJJhY9LVwXj5",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "append_to_doc": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create_email_draft": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d4dde563-c39f-4bb7-9c70-95a22179d799",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7ba05f9e9efac357d1a95577f4078fea1effae624a5b8b960c9e3ea2245069c4"
+  },
+  "nodeGroups": [],
+  "id": "RHF6o8ynxKYZAYzf",
+  "tags": []
+}
