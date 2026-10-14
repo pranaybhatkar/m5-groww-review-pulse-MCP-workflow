@@ -16,7 +16,7 @@ and then, **only after a human approves**, logs both to a Google Doc and prepare
 | Item | Link |
 |---|---|
 | Working prototype (n8n form) | `<PRODUCTION_FORM_URL>` |
-| Demo video (3 min or less) | `<DEMO_VIDEO_DRIVE_LINK>` |
+| Demo video (3 min or less) | `[<DEMO_VIDEO_DRIVE_LINK>](https://drive.google.com/file/d/1UdW6UcFcmRFNJF2ndyXFeWYePwn4OZ_Y/view?usp=sharing)` |
 | GitHub repository | `<GITHUB_REPO_URL>` |
 
 The prototype runs on an n8n Cloud trial, which ends around 18 October 2026. After that the link stops working, so the demo video and the exported workflows in `workflows/` are the lasting proof.
