@@ -229,4 +229,6 @@ workflows/                exported n8n workflows (no secrets)
 screenshots/              approval page, Doc entry, Gmail draft, MCP tool calls
 ```
 
+**Note:** The two main workflows to run are `workflows/M5-working-v2.json` (direct nodes variant) and `workflows/M5-mcp-server.json` (MCP server variant). `workflows/M5-mcp-version.json` is the MCP client/agent variant that uses the MCP server.
+
 The optional analysis scripts used to find the fee issue (`count_keywords.py`, `count_fee_topics.py`, `mf_issues.py`) and their outputs are under `analysis/`.
